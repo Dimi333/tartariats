@@ -2,8 +2,14 @@
 	"compilerOptions": {
 		"target": "es5",
 		"module": "commonjs",
-		"sourceMap": true
+		"moduleResolution": "node",
+		"sourceMap": true,
+		"allowJs": true,
+		"removeComments": true
 	},
+	"include": [
+		"*.d.ts"
+	],
 	"exclude": [
 		"node_modules"
 	]
