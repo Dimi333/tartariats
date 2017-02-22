@@ -1,0 +1,69 @@
+body {
+	margin: 0;
+	background: black;
+	display: table-cell;
+    vertical-align: middle;
+	cursor: crosshair;
+}
+#telo {
+	z-index: 1000;
+	position: absolute;
+}
+.okno {
+	background: rgba(0, 0, 0, .5);
+	color: white;
+	border-radius: 5px;
+	padding: 10px;
+	margin: 1%;
+	font-size: 22px;
+	font-family: VT323;
+	position: fixed;
+	font-weight: 300;
+}
+input, button {
+	font-size: 22px;
+	font-family: VT323;
+}
+#okno {
+	font-weight: 300;
+	max-width: 600px;
+	box-sizing: border-box;
+	max-height: 50%;
+	background: darkblue;
+	color: white;
+}
+.okno select {
+	font-size: 22px;
+	font-family: VT323;
+}
+#riadokZdravie {
+	display: block;
+	color: white;
+	text-align: center;
+	position: relative;
+	background: black;
+	margin-bottom: 5px;
+}
+.txt {
+	z-index: 10;
+	position: relative
+}
+#zdraviePas {
+	position: absolute;
+	left: 0; top: 0;
+	height: 22px;
+	background: #ff3019;
+	background: -moz-linear-gradient(top,  #ff3019 0%, #cf0404 100%);
+	background: -webkit-linear-gradient(top,  #ff3019 0%,#cf0404 100%);
+	background: linear-gradient(to bottom,  #ff3019 0%,#cf0404 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ff3019', endColorstr='#cf0404',GradientType=0 );
+}
+#riadokPeniaze {
+	color: #ffd700;
+}
+#riadokPeniaze img {
+	vertical-align: middle;
+}
+#riadokSkusenosti {
+	color: #fff
+}

@@ -7,9 +7,6 @@
 		"allowJs": true,
 		"removeComments": true
 	},
-	"include": [
-		"*.d.ts"
-	],
 	"exclude": [
 		"node_modules"
 	]

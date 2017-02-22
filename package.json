@@ -10,6 +10,8 @@
   "license": "ISC",
   "devDependencies": {
     "awesome-typescript-loader": "^3.0.4",
+    "less": "^2.7.2",
+    "less-loader": "^2.2.3",
     "typescript": "^2.1.6",
     "webpack": "^2.2.1"
   }

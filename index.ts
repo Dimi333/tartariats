@@ -1,15 +1,16 @@
-declare var Phaser: any; //aby nemal kecy, lebo pouziva externu kniznicu
+/// <reference path="./vendor/phaser.d.ts"/>
+import {Meno} from './app/Meno';
+declare var Lockr: any;
 
-class SimpleGame {
-
+class Tartaria {
     constructor() {
-        this.game = new Phaser.Game(800, 600, Phaser.AUTO, 'content', { preload: this.preload, create: this.create });
+        this.game = new Phaser.Game(Lockr.get('sirka'), Lockr.get('vyska'), Phaser.AUTO, 'telo', { preload: this.preload, create: this.create });
     }
 
     game: Phaser.Game;
 
     preload() {
-        this.game.load.image('logo', 'assets/phaser.png');
+        this.game.load.image('logo', 'assets/obr/phaser.png');
     }
 
     create() {
@@ -20,7 +21,11 @@ class SimpleGame {
 }
 
 window.onload = () => {
+	if(!Lockr.get('sirka') && !Lockr.get('vyska') && !Lockr.get('skalovanie')) {
+		Lockr.set('sirka', 768);
+		Lockr.set('vyska', 432);
+		Lockr.set('skalovanie', 0);
+	}
 
-    var game = new SimpleGame();
-
+    var game = new Tartaria();
 };

@@ -1,5 +1,5 @@
 const path = require('path'); 						//asi cesta, kde je
-var helpers = require('./helpers');
+var helpers = require('./app/helpers');
 
 const config = {
 	entry: './index',	 							//vstupny bod
@@ -18,9 +18,19 @@ const config = {
 					{
 						loader: 'awesome-typescript-loader',
 						options: {
-							configFileName: helpers.root('src', 'tsconfig.json')
+							configFileName: helpers.root('src', './app/tsconfig.json')
 						}
 					}
+				]
+			},
+			{
+				test: /\.less$/,
+				use: [
+					'style-loader',
+					{ 
+						loader: 'css-loader', options: { importLoaders: 1 } 
+					},
+					'less-loader'
 				]
 			}
 		]
