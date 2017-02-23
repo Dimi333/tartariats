@@ -4,12 +4,15 @@
         <meta charset="UTF-8" />
         <title>Tartaria</title>
         <link rel="stylesheet" type="text/css" href="assets/css/css.css">
-        <script src="//ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <script src="vendor/jquery.min.js"></script> <!-- 3.1.1 -->
 		<script src="vendor/lockr.min.js"></script>
         <link rel="shortcut icon" href="assets/favicon.ico" type="image/x-icon">
+        <meta name="viewport" content="initial-scale=1 maximum-scale=1 user-scalable=0" />
     </head>
     <body>
+        <div id='telo'></div>
         <script src="vendor/phaser.min.js"></script>
+        <script src="app/loadFix.js"></script>
 		<script src="dist/balik.js"></script>
 
         <script>
@@ -21,8 +24,6 @@
             ga('create', 'UA-90771355-1', 'auto');
             ga('send', 'pageview');
         </script>
-
-        <div id='telo'></div>
     </body>
 </html>
 
