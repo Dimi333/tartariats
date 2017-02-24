@@ -8,6 +8,7 @@ window.onload = () => {
 		Lockr.set('sirka', 768);
 		Lockr.set('vyska', 432);
 		Lockr.set('skalovanie', 0);
+		Lockr.set('parallax', 1);
 	}
 
     var game = new Tartaria();

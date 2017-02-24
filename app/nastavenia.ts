@@ -1,13 +1,16 @@
 /// <reference path="../vendor/phaser.d.ts"/>
 declare var Lockr: any;
 declare var $: any;
-import * as ui from './ui.js';
+import {UI} from './ui';
 
 export class Nastavenia extends Phaser.State {
 	escapeKey;
+	ui;
 
 	constructor() {
 		super();
+
+		this.ui = new UI();
 	}
 
  	create() {
@@ -24,14 +27,22 @@ export class Nastavenia extends Phaser.State {
 
 		var html = "<div class='okno' id='nastavenia'>Nastavenia<br>"+
 						"<small>Terajsie rozlíšenie: "+Lockr.get('sirka')+'x'+Lockr.get('vyska')+"</small><br>"+
+
 						"<label><input type='checkbox' name='skalovanie' id='skalovanie' ";
 
 		if(Lockr.get('skalovanie') == 1) {
 			html += 'checked';
 		}
 
-		html += "> skalovanie</label><br>" +
-						"Vyber z niektoreho 16:9 rozlisenia:<br>" +
+		html += "> skalovanie</label><br><label><input type='checkbox' name='paralax' id='paralax' ";
+
+		if(Lockr.get('paralax') == 1) {
+			html += 'checked';
+		}
+
+		html += "> paralax</label><br>";
+
+						html += "Vyber z niektoreho 16:9 rozlisenia:<br>" +
 						"<select id='rozlisenie' name='rozlisenie'>" +
 						"	<option value='"+Lockr.get('sirka')+"x"+Lockr.get('vyska')+"' selected>* "+Lockr.get('sirka')+" × "+Lockr.get('vyska')+"</option>" +
 						"	<option value='768x432'>768 × 432</option>" +
@@ -95,12 +106,14 @@ export class Nastavenia extends Phaser.State {
 		$('#telo').on('click', '#ulozNastavenia', function(e) {
 			var roz = $('#rozlisenie').val();
 			var ska = $('#skalovanie').is(':checked');
+			var par = $('#paralax').is(':checked');
 			
 			var polohaX = roz.indexOf('x');
 			var sirka = roz.substring(0, polohaX);
 			var vyska = roz.substring(polohaX+1);
 
-			ui.actionOnClick(sirka, vyska, ska);
+			var ui = new UI();
+			ui.actionOnClick(sirka, vyska, ska, par);
 		});
 
 		var can = $('canvas');

@@ -5,6 +5,7 @@ declare var $: any;
 import {Hrac} from './hrac';
 import {PohyblivyPredmet} from './pohyblivyPredmet';
 import {Nepriatel} from './nepriatel';
+import * as ulohy from './ulohy';
 
 export class Game extends Phaser.State {
 	constructor() {
@@ -12,13 +13,13 @@ export class Game extends Phaser.State {
 	}
 
 	uroven:string;
-	obrazokNaPozadi:string;
 	zaciatok_urovnex:number;
 	zaciatok_urovney:number;
 	kameraX:number;
 	map:any;
 	nazovMapy:string;
-	vrstvaPozadie:any;
+	vrstvaParallax: any;
+	vrstvaPozadie: any;
 	vrstvaStromy;
 	vrstvaBloky;
 	sipy;
@@ -31,17 +32,15 @@ export class Game extends Phaser.State {
 	naboj;
 	nazovMapyText;
 
-	init(uroven, obrazokNaPozadi, zaciatok_urovnex, zaciatok_urovney) {
+	init(uroven, zaciatok_urovnex, zaciatok_urovney) {
 		//reset urovne
 		if(Lockr.get('vlastnosti')) {
 			var vlastnosti = Lockr.get('vlastnosti');
 			this.uroven = vlastnosti.uroven;
-			this.obrazokNaPozadi = vlastnosti.obrazokNaPozadi;
 			this.zaciatok_urovnex = vlastnosti.kdeMaZacatx;
 			this.zaciatok_urovney = vlastnosti.kdeMaZacaty;
 		} else {
 			this.uroven = uroven;
-			this.obrazokNaPozadi = obrazokNaPozadi;
 			this.zaciatok_urovnex = zaciatok_urovnex;
 			this.zaciatok_urovney = zaciatok_urovney;
 		}
@@ -61,20 +60,30 @@ export class Game extends Phaser.State {
 		this.camera.flash(0x000000);
 		this.game.world.setBounds(0, 0, 640, 480);
 		this.game.stage.backgroundColor = "#4488AA";
-
 		this.map = this.game.add.tilemap(this.uroven);
-	
-		//pozadie
-		//paralax1 = this.game.add.sprite(0, 0, this.map.layers[0].properties.obrazokNaPozadi);
-		//paralax1.x -= 150;
-		
 		this.nazovMapy = this.map.layers[0].properties.nazovMapy;
 		this.map.addTilesetImage('zakladne', 'dlazdice');
+
+		/*var myBitmap = this.game.add.bitmapData(this.game.world.width, this.game.world.height);
+		var grd=myBitmap.context.createLinearGradient(0,0,0,500);
+		grd.addColorStop(0,"blue");
+		grd.addColorStop(1,"white");
+		myBitmap.context.fillStyle=grd;
+		myBitmap.context.fillRect(0,0,this.game.world.width, this.game.world.height);
+		var lol = this.game.add.sprite(0,0, myBitmap);*/
+
+		this.vrstvaParallax = this.map.createLayer('parallax'); //oblaciky a spol
 		this.vrstvaPozadie = this.map.createLayer('pozadie'); //da sa pred nim ist
 		this.vrstvaStromy = this.map.createLayer('stromy'); //da sa po nich liezt
 		this.vrstvaBloky = this.map.createLayer('bloky'); //zastavia hraca
 		this.map.setCollisionBetween(1, 100000, true, 'bloky');
 		this.map.setCollisionBetween(1, 100000, true, 'stromy');
+
+		//parallax
+		if(Lockr.get('paralax') === 1 && typeof this.vrstvaParallax != 'undefined') {
+			this.vrstvaParallax.scrollFactorX  = .8;
+			this.vrstvaParallax.scrollFactorY  = .8;
+		}
 
 		this.sipy = this.game.add.group();
 		this.sipyNepriatelov = this.game.add.group();
@@ -84,6 +93,7 @@ export class Game extends Phaser.State {
 
 		//resizes the game world to match the layer dimensions
 		this.vrstvaBloky.resizeWorld();
+		//lol.scale.set(100, 100);
 		this.vytvorZbieratelnePredmety();
 
 		this.vrstvaPopredie = this.map.createLayer('popredie'); //da sa za nim ist
@@ -96,14 +106,13 @@ export class Game extends Phaser.State {
 			vlastnostiHraca = vlastnosti;
 		} else {
 			vlastnostiHraca = {
-				rychlostPohybu: 850, 
-				vyskaSkoku: 500, 
-				gravitacia: 700, 
-				plneZdravie: Number(localStorage.getItem('plneZdravie')) || 300, 
-				zdravie: Number(localStorage.getItem('zdravie')) || 300, 
+				rychlostPohybu: 850,
+				vyskaSkoku: 500,
+				gravitacia: 700,
+				plneZdravie: Number(localStorage.getItem('plneZdravie')) || 300,
+				zdravie: Number(localStorage.getItem('zdravie')) || 300,
 				peniaze: Number(localStorage.getItem('peniaze')) || 0,
 				uroven: this.uroven,
-				obrazokNaPozadi: this.obrazokNaPozadi,
 				zrychlenie: 20,
 				spomalenie: 30,
 				zrychlenieSkoku: 40,
@@ -111,7 +120,7 @@ export class Game extends Phaser.State {
 				urovenPostavy: 1
 			};
 		}
-		this.player = new Hrac(this.game, this.zaciatok_urovnex, this.zaciatok_urovney, this.pohybliveVeci, this.vrstvaPozadie, this.vrstvaPopredie, this.vrstvaBloky, this.vrstvaStromy, this.coins, this.nepriatelia, this.sipy, this.sipyNepriatelov, vlastnostiHraca);
+		this.player = new Hrac(this.game, this.zaciatok_urovnex, this.zaciatok_urovney, this.pohybliveVeci, this.vrstvaPopredie, this.vrstvaBloky, this.vrstvaStromy, this.coins, this.nepriatelia, this.sipy, this.sipyNepriatelov, vlastnostiHraca);
 		this.game.camera.follow(this.player, Phaser.Camera.FOLLOW_LOCKON, .5, .5);
 		
 		this.vytvorNepriatelov();
@@ -128,7 +137,7 @@ export class Game extends Phaser.State {
 		this.sipyNepriatelov.setAll('body.gravity.y', 500);
         
 		//vypne koliziu so stromami zo spodu a z bokov
-		this.map.layers[2].data.forEach(function(pole) {
+		this.map.layers[this.vrstvaStromy.index].data.forEach(function(pole) {
 			pole.forEach(function(dlazdica) {
 				if(dlazdica.index > 0) {
 					dlazdica.collideDown = false;
@@ -215,7 +224,7 @@ export class Game extends Phaser.State {
 			nepriatel.zdravie -= 25;
 
 			if(nepriatel.zdravie <= 0) {
-				//nepriatel_zabitaBytost(nepriatel);	//aby o tom vedel quest system
+				ulohy.nepriatel_zabitaBytost(nepriatel);	//aby o tom vedel quest system
 				this.player.pridajSkusenosti(nepriatel.skusenosti);
 
 				if(nepriatel.animations._anims.smrt) {
@@ -432,7 +441,7 @@ export class Game extends Phaser.State {
 
 		//vytvorenie veci pre ulohu
 		if(Lockr.get('plnenaUloha')) {
-			//game_pripravVeciPreUlohu(this);
+			ulohy.game_pripravVeciPreUlohu(this);
 		}
 
 		//pichliac

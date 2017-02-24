@@ -1,0 +1,102 @@
+OBJEKTY >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Nepriatelia:
+	? striela: bool
+		? naboj: string<sprite> {sip, guano, sipSvetly}
+		? casMedziVystrelmi: int<1000 ms>
+	sprite: string<sprite> {jezko, slime, kostlivec, netopier, netopier2, slime2, slimeBoss, ohyzd}
+	type: string {kostlivec, sliz, netopier, ohyzd, nepriatel=jezko}
+	? dovidi: int <300>
+	? skusenosti: int <10>
+	? zdravie: int <50>
+	? zranenie: int/float <1>
+	? neviditelny: float
+	? pohybDoX: int
+	? pohybOdX: int
+
+Zbieratelne predmety: (mince)
+	type: string {ovocie, minca}
+	sprite: string<sprite> {jahoda, visna}
+	? hodnota: int <1>
+
+Krabica: (znicitelne)
+	sprite: string {krabica, krabica2, krabica3}
+	type: string <pohyblive>
+	?pohyblive: bool
+	?znicitelne: bool
+		?zdravie: int <50>
+	?padajuce: bool
+		?zdrzanie: int <300ms> //najmenej 1ms
+
+Pasce:
+	type: string {pasca}
+	sprite: string<sprite> {jezko}
+	?zranenie: int<1>
+	?padajuca: boolean
+
+Dvere:
+	type: string
+	sprite: string<sprite>
+	uroven: string<uroven>
+	zaciatokX: int
+	zaciatokY: int
+	sprite: string<sprite>
+	? vstupNaPoziadanie: bool
+
+Postavy:
+	? meno: <string>
+	type: string {carodejnik, obchodnik, carodejnica, zena, lahkaZena}
+	sprite: string<sprite>
+	? rozhovor: bool
+	? uloha: string<camelCase>
+
+Nápisy:
+	text: string
+	txtFarba: string<#fff>
+	txtFarbaTahu: string<#fff>
+	txtHrubkaTahu: int
+	txtVelkost: int<px>
+	type: string<banner>
+
+Fakla:
+	type: string <fakla>
+	sprite: string<sprite> <fakla>
+
+Lava:
+	type: string <lava>
+	sprite: string<sprite> <lava>
+	zranenie: int <1>
+
+Teleport (medzi urovnami):
+	type: string <dvere>
+	sprite: string<sprite> {teleport}
+	uroven: string
+	zaciatokX: int
+	zaciatokY: int
+
+Teleport (v ramci urovne):
+	type: string <teleport>
+	sprite: string<sprite> {teleport, neviditelny}
+	cielX: int
+	cielY: int
+
+Nastavenia mapy:
+	nazovMapy: string
+	obrazokNaPozadi: string<sprite>
+	pocasie: string {snezi}
+	prostredie: string {les}
+
+
+
+ÚLOHY >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+ID: stratenyDiamant
+Zadava: Strok / Strok > Moryn
+
+ID: priseraVBani
+Zadava: Strok / Strok > Alkazar
+
+ID: netopiereVDome
+Zadava: Strok / Strok > Dubák
+
+ID: stratenyNapoj
+Zadava: Drevenik / Dreveník > Ľudmila

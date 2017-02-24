@@ -1,7 +1,8 @@
 /// <reference path="../vendor/phaser.d.ts"/>
 declare var Lockr: any;
 declare var $: any;
-import * as ui from './ui.js';
+import * as ulohy from './ulohy';
+import {UI} from './ui';
 
 export class Hrac extends Phaser.Sprite {
 	bloky;
@@ -11,7 +12,6 @@ export class Hrac extends Phaser.Sprite {
 	zbieratelnePredmety;
 	sipyNepriatelov;
 	pohybliveVeci;
-	pozadie;
 	popredie;
 	enableBody;
 	cursors;
@@ -32,9 +32,13 @@ export class Hrac extends Phaser.Sprite {
 	spomalenie;
 	jeVoVode;
 	zobrazenaBublina;
+	znenie:string = "0.1.21";
+	ui;
 
-	constructor(game, kdeMaZacatx, kdeMaZacaty, pohybliveVeci, pozadie, popredie, bloky, stromy, zbieratelnePredmety, nepriatelia, sipy, sipyNepriatelov, vlastnosti) {
+	constructor(game, kdeMaZacatx, kdeMaZacaty, pohybliveVeci, popredie, bloky, stromy, zbieratelnePredmety, nepriatelia, sipy, sipyNepriatelov, vlastnosti) {
 		super(game, kdeMaZacatx, kdeMaZacaty);
+
+		this.ui = new UI();
 
 		this.game = game;
 		this.bloky = bloky;
@@ -44,7 +48,6 @@ export class Hrac extends Phaser.Sprite {
 		this.zbieratelnePredmety = zbieratelnePredmety;
 		this.sipyNepriatelov = sipyNepriatelov;
 		this.pohybliveVeci = pohybliveVeci;
-		this.pozadie = pozadie;
 		this.popredie = popredie;
 
 		if(!kdeMaZacatx || !kdeMaZacaty) {
@@ -103,7 +106,7 @@ export class Hrac extends Phaser.Sprite {
 		var html = "<div class='okno' id='HUD'><span id='riadokZdravie'><span id='zdraviePas'></span><span class='txt'><span id='zdravie'>" + this.vlastnosti.zdravie  + "</span> / <span id='plneZdravie'>" + this.vlastnosti.plneZdravie  + "</span></span></span>"+
 		"<span id='riadokPeniaze'><img src='assets/obr/minca.png'> <span id='peniaze'>" + this.vlastnosti.peniaze  + "</span></span><br>" + 
 		"<span id='riadokSkusenosti'>Skúsenosti: <span id='skusenosti'>" + this.vlastnosti.skusenosti  + "</span></span>"+
-		"<br><small>znenie: 0.1.20</small></div>";
+		"<br><small>znenie: "+this.znenie+"</small></div>";
 
 		if($('#HUD').length === 0) {
 			$(html).prependTo('body');
@@ -180,7 +183,7 @@ export class Hrac extends Phaser.Sprite {
 
 		//zatvorenie okna
 		if(this.escKey.justDown) {
-			ui.zabiOkno();
+			this.ui.zabiOkno();
 		}
 
 		//reset hry
@@ -205,7 +208,7 @@ export class Hrac extends Phaser.Sprite {
 		
 		//ulozenie pozicie
 		if(this.ulozKey.justDown) {
-			ui.mojAlert('Ulozene');
+			this.ui.mojAlert('Ulozene');
 			this.uloz(this.vlastnosti.uroven, this.x, this.y);
 		}
 
@@ -277,10 +280,10 @@ export class Hrac extends Phaser.Sprite {
 		if((this.y >= this.game.world.height) || this.vlastnosti.zdravie <= 0) {
 			this.vlastnosti.zdravie = 0;
 			this.vypisHUD();
-			ui.mojAlert('Zomrel si... :(');
+			this.ui.mojAlert('Zomrel si... :(');
 			this.game.paused = true;
 			setTimeout(function(game) {game.paused = false}, 1000, this.game);
-			this.game.state.start('Game', true, false, this.vlastnosti.uroven, this.vlastnosti.obrazokNaPozadi, this.vlastnosti.kdeMaZacatx, this.vlastnosti.kdeMaZacaty);
+			this.game.state.start('Game', true, false, this.vlastnosti.uroven, this.vlastnosti.kdeMaZacatx, this.vlastnosti.kdeMaZacaty);
 		}
 	}
 
@@ -336,7 +339,7 @@ export class Hrac extends Phaser.Sprite {
 
 	collect(player, collectable) {
 		//zoberie predmet, vola ulohy
-		//hrac_zberPredmetov(player, collectable);
+		ulohy.hrac_zberPredmetov(player, collectable);
 
 		if(collectable.skusenostiZaZber) {
 			this.vlastnosti.skusenosti += collectable.skusenostiZaZber;
@@ -404,9 +407,9 @@ export class Hrac extends Phaser.Sprite {
 					this.vlastnosti.peniaze -= 5;
 					this.vlastnosti.zdravie = this.vlastnosti.plneZdravie;
 					this.vypisHUD();
-					ui.mojAlert('Si vyliečený')
+					this.ui.mojAlert('Si vyliečený')
 				} else {
-					ui.mojAlert('Nemáš dosť peňazí alebo niesi zranený.')
+					this.ui.mojAlert('Nemáš dosť peňazí alebo niesi zranený.')
 				}
 			}
 
@@ -417,15 +420,15 @@ export class Hrac extends Phaser.Sprite {
 					if(this.vlastnosti.zdravie >= this.vlastnosti.plneZdravie)
 						this.vlastnosti.zdravie = this.vlastnosti.plneZdravie;
 					this.vypisHUD();
-					ui.mojAlert('Užil si si v Milicinej izbičke ;). Už sa tešia až ťa tu uvidia opäť!');
+					this.ui.mojAlert('Užil si si v Milicinej izbičke ;). Už sa tešia až ťa tu uvidia opäť!');
 				} else {
-					ui.mojAlert('BEZ PENĚZ DO HOSPODY NELEZ!')
+					this.ui.mojAlert('BEZ PENĚZ DO HOSPODY NELEZ!')
 				}
 			}
 
 			//zadanie a ukoncenie uloh
 			if(typeof collectable.uloha !== 'undefined' && (this.akcneTlacidlo.justDown || this.rctrlKey.justDown)) {
-				//hrac_zadajUlohu(collectable, this);
+				ulohy.hrac_zadajUlohu(collectable, this);
 			}
 		}
 	};
