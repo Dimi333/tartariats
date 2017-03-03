@@ -1,6 +1,4 @@
 /// <reference path="../vendor/phaser.d.ts"/>
-declare var Lockr: any;
-declare var $: any;
 
 export class PohyblivyPredmet extends Phaser.Sprite {
 	vlastnosti;

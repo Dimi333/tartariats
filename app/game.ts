@@ -83,6 +83,7 @@ export class Game extends Phaser.State {
 		if(Lockr.get('paralax') === 1 && typeof this.vrstvaParallax != 'undefined') {
 			this.vrstvaParallax.scrollFactorX  = .8;
 			this.vrstvaParallax.scrollFactorY  = .8;
+			this.vrstvaParallax.tint = 0x7DB9E8;
 		}
 
 		this.sipy = this.game.add.group();
@@ -388,36 +389,64 @@ export class Game extends Phaser.State {
 					sprite[key] = element.properties[key];
 				});
 				break;
+			case 'lahkaZena':
+				sprite = group.create(element.x, element.y, 'dataFile', element.properties.sprite + '01.png');
+
+				sprite.animations.add('otacanie', Phaser.Animation.generateFrameNames(element.properties.sprite, 1, 16, '.png', 2), 10, true, false);
+				sprite.animations.play('otacanie');
+				var child = sprite.addChild(this.game.make.sprite(-45, -100, 'dataFile', 'chatBublina.png'));
+				child.visible = false;
+				sprite.autoCull = true;
+
+				//copy all properties to the sprite
+				Object.keys(element.properties).forEach(function(key) {
+					sprite[key] = element.properties[key];
+				});
+				break;
+			case 'zena':
+				sprite = group.create(element.x, element.y, 'dataFile', element.properties.sprite + '1.png');
+
+				sprite.animations.add('otacanie', Phaser.Animation.generateFrameNames(element.properties.sprite, 1, 4, '.png', 1), 1, true, false);
+				sprite.animations.play('otacanie');
+				var child = sprite.addChild(this.game.make.sprite(5, -100, 'dataFile', 'chatBublina.png'));
+				child.visible = false;
+				sprite.autoCull = true;
+
+				//copy all properties to the sprite
+				Object.keys(element.properties).forEach(function(key) {
+					sprite[key] = element.properties[key];
+				});
+				break;
+			case 'obchodnik':
+				sprite = group.create(element.x, element.y, 'dataFile', element.properties.sprite + '1.png');
+
+				sprite.animations.add('otacanie', Phaser.Animation.generateFrameNames(element.properties.sprite, 1, 4, '.png', 1), 1, true, false);
+				sprite.animations.play('otacanie');
+				var child = sprite.addChild(this.game.make.sprite(5, -100, 'dataFile', 'nakupBublina.png'));
+				child.visible = false;
+				sprite.autoCull = true;
+
+				//copy all properties to the sprite
+				Object.keys(element.properties).forEach(function(key) {
+					sprite[key] = element.properties[key];
+				});
+				break;
+			case 'carodejnik':
+				sprite = group.create(element.x, element.y, 'dataFile', element.properties.sprite + '1.png');
+
+				sprite.animations.add('otacanie', Phaser.Animation.generateFrameNames(element.properties.sprite, 1, 3, '.png', 1), 1, true, false);
+				sprite.animations.play('otacanie');
+				var child = sprite.addChild(this.game.make.sprite(5, -100, 'dataFile', 'chatBublina.png'));
+				child.visible = false;
+				sprite.autoCull = true;
+
+				//copy all properties to the sprite
+				Object.keys(element.properties).forEach(function(key) {
+					sprite[key] = element.properties[key];
+				});
+				break;
 			default:
 				sprite = group.create(element.x, element.y, element.properties.sprite);
-
-				if(druh === 'obchodnik') {
-					sprite.animations.add('otacanie', [0, 1, 2, 3], 1, true);
-					sprite.animations.play('otacanie');
-					var child = sprite.addChild(this.game.make.sprite(30, -120, 'dataFile', 'nakupBublina.png'));
-					child.visible = false;
-				}
-
-				if(druh === 'lahkaZena') {
-					sprite.animations.add('otacanie', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], 10, true);
-					sprite.animations.play('otacanie');
-					var child = sprite.addChild(this.game.make.sprite(-45, -100, 'nakupBublina'));
-					child.visible = false;
-				}
-
-				if(druh === 'carodejnik') {
-					sprite.animations.add('otacanieCarodejnika', [0, 1, 2], 1, true);
-					sprite.animations.play('otacanieCarodejnika');
-					var child = sprite.addChild(this.game.make.sprite(30, -120, 'dataFile', 'chatBublina.png'));
-					child.visible = false;
-				}
-
-				if(druh === 'zena') {
-					sprite.animations.add('otacanieZeny', [0, 1, 2, 3], 1, true);
-					sprite.animations.play('otacanieZeny');
-					var child = sprite.addChild(this.game.make.sprite(10, -100, 'dataFile', 'chatBublina.png'));
-					child.visible = false;
-				}
 
 				if(druh === 'banner') {
 					var banText = this.game.add.text(element.x, element.y, element.properties.text, { font: 'VT323', fontSize: element.properties.txtVelkost, fill: element.properties.txtFarba });

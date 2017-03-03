@@ -31,7 +31,8 @@ export class Nepriatel extends Phaser.Sprite {
 			vlastnosti.sprite === "slime" ||
 			vlastnosti.sprite === "slime2" ||
 			vlastnosti.sprite === "kostlivec" ||
-			vlastnosti.sprite === "slimeBoss") {
+			vlastnosti.sprite === "slimeBoss" ||
+			vlastnosti.sprite === "ohyzd") {
 			this.sprite = Phaser.Sprite.call(this, game, x, y, 'dataFile', vlastnosti.sprite + '01.png');
 		} else {
 			Phaser.Sprite.call(this, game, x, y, vlastnosti.sprite);   
@@ -84,10 +85,10 @@ export class Nepriatel extends Phaser.Sprite {
 		if(String(this.type) === "ohyzd") {
 			this.body.gravity.y = 800;
 			this.body.velocity.x = this.rychlostPohybu;
-			this.animations.add("right", ['ohyzd12', 'ohyzd13', 'ohyzd14', 'ohyzd16', 'ohyzd16', 'ohyzd17']);
-			this.animations.add("left", ['ohyzd39', 'ohyzd38', 'ohyzd37', 'ohyzd36', 'ohyzd35', 'ohyzd34']);
-			this.animations.add("smrt", ['ohyzd45', 'ohyzd46', 'ohyzd47', 'ohyzd48', 'ohyzd49']);
-			this.animations.play('right', 5, true);
+			this.animations.add('right', Phaser.Animation.generateFrameNames(this.sprite, 1, 6, '.png', 2), 10, true, false);
+			this.animations.add('left', Phaser.Animation.generateFrameNames(this.sprite, 7, 12, '.png', 2), 10, true, false);
+			this.animations.add('smrt', Phaser.Animation.generateFrameNames(this.sprite, 13, 17, '.png', 2), 10, true, false);
+			this.animations.play('right');
 		}
 		if(this.sprite === "netopier") {
 			this.body.gravity.y = 0;

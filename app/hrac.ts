@@ -32,7 +32,7 @@ export class Hrac extends Phaser.Sprite {
 	spomalenie;
 	jeVoVode;
 	zobrazenaBublina;
-	znenie:string = "0.1.21";
+	znenie:string = "0.1.22";
 	ui;
 
 	constructor(game, kdeMaZacatx, kdeMaZacaty, pohybliveVeci, popredie, bloky, stromy, zbieratelnePredmety, nepriatelia, sipy, sipyNepriatelov, vlastnosti) {

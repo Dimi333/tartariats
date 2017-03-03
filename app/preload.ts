@@ -51,16 +51,6 @@ export class Preload extends Phaser.State {
 		this.load.image('obrazokNaPozadi4', 'assets/pozadie4.jpg');*/
 		//this.load.image('neviditelny', 'assets/obrneviditelny.png'); // musi ostat, kvoli niektorym objektom bez spritov
 
-		//prerobit do atlasu
-		this.load.spritesheet('obchodnik', 			'assets/obr/obchodnik.png', 200, 58);
-		this.load.spritesheet('carodejnik', 		'assets/obr/carodejnik.png', 200, 64);
-		this.load.spritesheet('carodejnikModry', 	'assets/obr/carodejnikModry.png', 200, 64);
-		this.load.spritesheet('carodejnikCerveny', 	'assets/obr/carodejnikCerveny.png', 200, 64);
-		this.load.spritesheet('zena', 				'assets/obr/zena.png', 150, 65);
-		this.load.spritesheet('zena2', 				'assets/obr/zena2.png', 150, 65);
-		this.game.load.atlas('ohyzd', 				'assets/obr/ohyzd.png', 'assets/obr/ohyzd.json', Phaser.Loader.TEXTURE_ATLAS_JSON_HASH);
-		this.game.load.atlas('netopier2', 			'assets/obr/netopier2.png', 'assets/obr/netopier2.json', Phaser.Loader.TEXTURE_ATLAS_JSON_HASH);
-		this.game.load.atlas('slimeBoss', 			'assets/obr/slimeBoss.png', 'assets/obr/slimeBoss.json', Phaser.Loader.TEXTURE_ATLAS_JSON_HASH);
 	}
 
 	create() {
