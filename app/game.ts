@@ -31,6 +31,7 @@ export class Game extends Phaser.State {
 	player;
 	naboj;
 	nazovMapyText;
+	//inventar;
 
 	init(uroven, zaciatok_urovnex, zaciatok_urovney) {
 		//reset urovne

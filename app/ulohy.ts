@@ -18,8 +18,8 @@ export function hrac_zadajUlohu(sKymSaRozprava, hrac) {
 export function hrac_zberPredmetov(hrac, predmet) {
 	var uloha = Lockr.get('plnenaUloha');
 	if(uloha) {
-		if(uloha[0].nazov === 'stratenyDiamant') collect_stratenyDiamant(predmet);
-		if(uloha[0].nazov === 'stratenyNapoj') collect_stratenyNapoj(predmet);
+		if(uloha[0].nazov === 'stratenyDiamant') collect_stratenyDiamant(hrac, predmet);
+		if(uloha[0].nazov === 'stratenyNapoj') collect_stratenyNapoj(hrac, predmet);
 	}
 }
 export function game_pripravVeciPreUlohu(game) {
@@ -58,6 +58,7 @@ function hrac_stratenyNapoj(hrac) {
 			ui.mojAlert('Vďaka za nápoj. Tu máš 10 zlatých');
 			hrac.vlastnosti.peniaze += 10;
 			hrac.vlastnosti.skusenosti += 500;
+			hrac.inventar.vezmiZInventara('ruzovaFlasa');
 			hrac.vypisHUD();
 			Lockr.rm('plnenaUloha');
 		} else {
@@ -65,10 +66,11 @@ function hrac_stratenyNapoj(hrac) {
 		}
 	}
 }
-function collect_stratenyNapoj(predmet) {
+function collect_stratenyNapoj(hrac, predmet) {
 	if(predmet.vlastnosti) {
 		if(predmet.vlastnosti.predmetPreUlohu === 'stratenyNapoj') {
-			predmet.destroy();
+			//predmet.destroy();
+			hrac.inventar.pridajDoInventara(predmet);
 			ui.mojAlert('Výborne, teraz nápoj vezmi Ľudmile do mesta.');
 			Lockr.set('plnenaUloha', [{nazov: 'stratenyNapoj', cielovaMapa: 'plesa', maNapoj: true}]);
 		}
@@ -76,7 +78,8 @@ function collect_stratenyNapoj(predmet) {
 }
 function game_stratenyNapoj(uloha, game) {
 	if(uloha[0].cielovaMapa === game.uroven && uloha[0].maNapoj === false) {
-		var pr = new Predmet('ruzovaFlasa', game.game, 1011, 528, game.player, game.vrstvaBloky, game.vrstvaStromy, game.coins, game.sipy, {type: 'napoj', predmetPreUlohu: 'stratenyNapoj'});
+		var pr = new Predmet('ruzovaFlasa', game.game, 1101, 528, game.player, game.vrstvaBloky, game.vrstvaStromy, game.coins, game.sipy, {type: 'napoj', predmetPreUlohu: 'stratenyNapoj'});
+		pr.name = 'ruzovaFlasa';
 		game.coins.add(pr);
 	}
 }
@@ -95,16 +98,18 @@ function hrac_stratenyDiamant(hrac) {
 			hrac.vlastnosti.peniaze += 100;
 			hrac.vlastnosti.skusenosti += 500;
 			hrac.vypisHUD();
+			hrac.inventar.vezmiZInventara('diamant');
 			Lockr.rm('plnenaUloha');
 		} else {
 			ui.mojAlert('Nájdi diamant v Hustolese pre Moryna.');
 		}
 	}
 }
-function collect_stratenyDiamant(collectable) {
-	if(collectable.vlastnosti) {
-		if(collectable.vlastnosti.predmetPreUlohu === 'stratenyDiamant') {
-			collectable.destroy();
+function collect_stratenyDiamant(hrac, predmet) {
+	if(predmet.vlastnosti) {
+		if(predmet.vlastnosti.predmetPreUlohu === 'stratenyDiamant') {
+			//predmet.destroy();
+			hrac.inventar.pridajDoInventara(predmet);
 			ui.mojAlert('Výborne, teraz diamant vezmi čarodejníkovy do mesta.');
 			Lockr.set('plnenaUloha', [{nazov: 'stratenyDiamant', cielovaMapa: 'hustoles', maDiamant: true}]);
 		}
@@ -113,6 +118,7 @@ function collect_stratenyDiamant(collectable) {
 function game_stratenyDiamant(uloha, game) {
 	if(uloha[0].cielovaMapa === game.uroven && uloha[0].maDiamant === false) {
 		var pr = new Predmet('diamant', game.game, 500, 500, game.player, game.vrstvaBloky, game.vrstvaStromy, game.coins, game.sipy, {type: 'diamant', predmetPreUlohu: 'stratenyDiamant'});
+		pr.name = 'diamant';
 		game.coins.add(pr);
 	}
 }

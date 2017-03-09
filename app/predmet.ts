@@ -27,8 +27,10 @@ export class Predmet extends Phaser.Sprite {
 		this.body.collideWorldBounds = true;
 		this.body.gravity.y = 700;
 
-		if(vlastnosti.type) {
-			this.type = vlastnosti.type;
+		if(vlastnosti) {
+			if(vlastnosti.type) {
+				this.type = vlastnosti.type;
+			}
 		}
 
 		Object.create(Phaser.Sprite.prototype);
@@ -43,8 +45,8 @@ export class Predmet extends Phaser.Sprite {
 		this.game.physics.arcade.collide(this, this.stromy, function (tento, tenDruhy) {
 		});
 
-		this.game.physics.arcade.collide(this, this.hrac, function (tento, tenDruhy) {
-			tento.kill();
+		this.game.physics.arcade.overlap(this, this.hrac, function (tento, tenDruhy) {
+			//tento.kill();
 		});
 	}
 }

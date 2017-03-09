@@ -3,6 +3,7 @@ declare var Lockr: any;
 declare var $: any;
 import * as ulohy from './ulohy';
 import {UI} from './ui';
+import { Inventar } from './inventar';
 
 export class Hrac extends Phaser.Sprite {
 	bloky;
@@ -32,8 +33,9 @@ export class Hrac extends Phaser.Sprite {
 	spomalenie;
 	jeVoVode;
 	zobrazenaBublina;
-	znenie:string = "0.1.22";
+	znenie:string = "0.1.23";
 	ui;
+	inventar;
 
 	constructor(game, kdeMaZacatx, kdeMaZacaty, pohybliveVeci, popredie, bloky, stromy, zbieratelnePredmety, nepriatelia, sipy, sipyNepriatelov, vlastnosti) {
 		super(game, kdeMaZacatx, kdeMaZacaty);
@@ -138,6 +140,8 @@ export class Hrac extends Phaser.Sprite {
 		this.jeVoVode = false;
 
 		Object.create(Phaser.Sprite.prototype);
+		
+		this.inventar = new Inventar(this.game);
 	};
 
 	update() {
