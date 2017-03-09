@@ -156,7 +156,6 @@ function game_priseraVBani(uloha, game) {
 			striela: true,
 			naboj: 'guano'
 		};
-		console.log(game);
 		var sliz = new Nepriatel(game.game, game.player, vlastnostiBossa, game.vrstvaBloky, game.coins, game.vrstvaStromy, game.sipy, game.sipyNepriatelov, 2463, 660);
 		game.nepriatelia.add(sliz);
 	}
