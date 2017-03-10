@@ -17,15 +17,19 @@ export class Inventar {
 		this.inventarGroup = game.add.group();
 		this.inventar = game.add.graphics(10, 10);
 		this.inventar.lineStyle(4, 0xffffff, 1);
-		this.inventar.y = game.camera.height-62;
+		this.inventar.y = 20;
 
+		this.inventar.beginFill(0x000000);
+		this.inventar.fillAlpha = .5;
 		for(let i=1; i<=this.maxi; i++) {
 			this.inventar.drawRect(i*50, 0, 50, 50);
 			this.veciVInvetari.push('');
 		}
+		this.inventar.endFill();
+		
 
-		let sg = this.inventar.width; //sirka grafiky
-		this.inventar.x = (game.camera.width/2) - (sg/2+24);
+		//let sg = this.inventar.width; //sirka grafiky
+		this.inventar.x = (game.camera.width/4) * 2.8;
 		this.inventar.fixedToCamera = true;
 		this.naplnInventar(game);
 	}
@@ -52,11 +56,11 @@ export class Inventar {
 			if(this.veciVInvetari[i-1] === '') {
 				this.inventarGroup.add(predmet);
 				this.veciVInvetari[i-1] = predmet.name;
-				//console.log('predmet',predmet);
 				predmet.fixedToCamera = true;
 				predmet.body.enable = false;
 				predmet.enableBody = false;
-				predmet.cameraOffset.setTo((this.game.camera.width/2) - (this.inventar.width/2-36) + ((i-1)*50), this.game.camera.height-52);
+
+				predmet.cameraOffset.setTo((this.game.camera.width/4) * 2.8 + 60 + ((i-1)*50), 30);
 				Lockr.set('inventar', this.veciVInvetari);
 				break;
 			}

@@ -33,9 +33,12 @@ export class Hrac extends Phaser.Sprite {
 	spomalenie;
 	jeVoVode;
 	zobrazenaBublina;
-	znenie:string = "0.1.23";
+	znenie:string = "0.1.24";
 	ui;
 	inventar;
+	dennikGroup;
+	dennik;
+	dennikKey;
 
 	constructor(game, kdeMaZacatx, kdeMaZacaty, pohybliveVeci, popredie, bloky, stromy, zbieratelnePredmety, nepriatelia, sipy, sipyNepriatelov, vlastnosti) {
 		super(game, kdeMaZacatx, kdeMaZacaty);
@@ -86,7 +89,8 @@ export class Hrac extends Phaser.Sprite {
 
 		this.spaceKey = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 		this.rctrlKey = this.game.input.keyboard.addKey(Phaser.Keyboard.CONTROL);
-		this.tildaKey = this.game.input.keyboard.addKey(Phaser.Keyboard.TILDE);
+		this.dennikKey = this.game.input.keyboard.addKey(Phaser.Keyboard.Q);
+		this.tildaKey = this.game.input.keyboard.addKey(Phaser.Keyboard.N);
 		this.escKey = this.game.input.keyboard.addKey(Phaser.Keyboard.ESC);
 		this.resetKey = this.game.input.keyboard.addKey(Phaser.Keyboard.L);
 		this.akcneTlacidlo = this.game.input.keyboard.addKey(Phaser.Keyboard.E);
@@ -193,6 +197,8 @@ export class Hrac extends Phaser.Sprite {
 		//reset hry
 		if(this.resetKey.justDown) {
 			Lockr.rm('vlastnosti');
+			Lockr.rm('plnenaUloha');
+			Lockr.rm('inventar');
 			location.reload(true);
 		}
 		//hlboke spady
@@ -200,6 +206,44 @@ export class Hrac extends Phaser.Sprite {
 			this.vlastnosti.uroven = 'jancib';
 			this.uloz(this.vlastnosti.uroven, 150, 2200);
 			location.reload(true);
+		}
+
+		if(this.dennikKey.justDown) {
+			var uloha = Lockr.get('plnenaUloha');
+			console.log(this.dennik);
+
+			if(typeof this.dennik === 'undefined') {
+				if(uloha) {
+					this.dennikGroup = this.game.add.group();
+					this.dennik = this.game.add.graphics(1, 1);
+					this.dennik.lineStyle(4, 0x000000, 1);
+					this.dennik.y = 20;
+					this.dennik.x = 180;
+					this.dennik.beginFill(0x000000);
+						this.dennik.fillAlpha = .8;
+						this.dennik.drawRect(0, 0, this.game.camera.width - 320, this.game.camera.height - 40);
+						
+						let style = { font: "16px Arial", fill: "#ffffff", align: "center", wordWrap: true, wordWrapWidth: 500 };
+						let text = this.game.add.text(300, 100, uloha[0].popis, style);
+						text.fixedToCamera = true;
+
+					this.dennik.endFill();
+					this.dennik.fixedToCamera = true;
+					this.dennikGroup.add(this.dennik);
+					this.dennikGroup.add(text);
+				}
+			} else {
+				/*if(!this.dennikGroup.alive && uloha) {
+					this.dennikGroup.alive = true;
+					this.dennikGroup.visible = true;
+				} else {
+					this.dennikGroup.alive = false;
+					this.dennikGroup.visible = false;
+				}*/
+				this.dennik = undefined;
+				this.dennikGroup.callAll('destroy');
+				this.dennikGroup.destroy();
+			}
 		}
 
 		//zber skúseností

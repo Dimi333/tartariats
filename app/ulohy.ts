@@ -9,11 +9,23 @@ import {Predmet} from './predmet';
 var ui:UI = new UI();
 
 export function hrac_zadajUlohu(sKymSaRozprava, hrac) {
-	if(sKymSaRozprava.uloha === 'Hostimil') hrac_uvod(hrac)
-	if(sKymSaRozprava.uloha === 'stratenyDiamant') hrac_stratenyDiamant(hrac);
-	if(sKymSaRozprava.uloha === 'priseraVBani') hrac_priseraVBani(hrac);
-	if(sKymSaRozprava.uloha === 'netopiereVDome') hrac_netopiereVDome(hrac);
-	if(sKymSaRozprava.uloha === 'stratenyNapoj') hrac_stratenyNapoj(hrac);
+	let uloha = Lockr.get('plnenaUloha');
+	
+	if(!uloha) {
+		if(sKymSaRozprava.uloha === 'Hostimil') hrac_uvod(hrac)
+		if(sKymSaRozprava.uloha === 'stratenyDiamant') hrac_stratenyDiamant(hrac);
+		if(sKymSaRozprava.uloha === 'priseraVBani') hrac_priseraVBani(hrac);
+		if(sKymSaRozprava.uloha === 'netopiereVDome') hrac_netopiereVDome(hrac);
+		if(sKymSaRozprava.uloha === 'stratenyNapoj') hrac_stratenyNapoj(hrac);
+	} else {
+		if(sKymSaRozprava.uloha === 'Hostimil') hrac_uvod(hrac)
+		else if(sKymSaRozprava.uloha === 'stratenyDiamant' && uloha[0].nazov === 'stratenyDiamant') hrac_stratenyDiamant(hrac);
+		else if(sKymSaRozprava.uloha === 'priseraVBani' && uloha[0].nazov === 'priseraVBani') hrac_priseraVBani(hrac);
+		else if(sKymSaRozprava.uloha === 'netopiereVDome' && uloha[0].nazov === 'netopiereVDome') hrac_netopiereVDome(hrac);
+		else if(sKymSaRozprava.uloha === 'stratenyNapoj' && uloha[0].nazov === 'stratenyNapoj') hrac_stratenyNapoj(hrac);
+		else 
+			ui.mojAlert('Naraz môžeš plniť iba jednu úlohu');
+	}
 }
 export function hrac_zberPredmetov(hrac, predmet) {
 	var uloha = Lockr.get('plnenaUloha');
@@ -50,9 +62,9 @@ function hrac_uvod(hrac) {
 function hrac_stratenyNapoj(hrac) {
 	var uloha = Lockr.get('plnenaUloha');
 	if(!uloha) {
-		ui.mojAlert('Ľudmila: Niesla som čarovný nápoj pre alchymistu, ale po ceste sem mi vypadol. Niekde v Plesách, to je hneď naľavo za mestom. Nemám odvahu vojsť do tých jaskýň. Prosím pomôžeš mi? Vďaka.');
-
-		Lockr.set('plnenaUloha', [{nazov: 'stratenyNapoj', cielovaMapa: 'plesa', maNapoj: false}]);
+		let popis = 'Ľudmila: Niesla som čarovný nápoj pre alchymistu, ale po ceste sem mi vypadol. Niekde v Plesách, to je hneď naľavo za mestom. Nemám odvahu vojsť do tých jaskýň. Prosím pomôžeš mi? Vďaka.'
+		ui.mojAlert(popis);
+		Lockr.set('plnenaUloha', [{nazov: 'stratenyNapoj', cielovaMapa: 'plesa', maNapoj: false, popis: popis}]);
 	} else {
 		if(uloha[0].maNapoj) {
 			ui.mojAlert('Vďaka za nápoj. Tu máš 10 zlatých');
@@ -69,10 +81,11 @@ function hrac_stratenyNapoj(hrac) {
 function collect_stratenyNapoj(hrac, predmet) {
 	if(predmet.vlastnosti) {
 		if(predmet.vlastnosti.predmetPreUlohu === 'stratenyNapoj') {
-			//predmet.destroy();
 			hrac.inventar.pridajDoInventara(predmet);
-			ui.mojAlert('Výborne, teraz nápoj vezmi Ľudmile do mesta.');
-			Lockr.set('plnenaUloha', [{nazov: 'stratenyNapoj', cielovaMapa: 'plesa', maNapoj: true}]);
+			let popis = 'Výborne, teraz nápoj vezmi Ľudmile do mesta.';
+			ui.mojAlert(popis);
+			let uloha = Lockr.get('plnenaUloha');
+			Lockr.set('plnenaUloha', [{nazov: uloha[0].nazov, cielovaMapa: uloha[0].cielovaMapa, maNapoj: true, popis: popis}]);
 		}
 	}
 }
@@ -89,9 +102,10 @@ function game_stratenyNapoj(uloha, game) {
 function hrac_stratenyDiamant(hrac) {
 	var uloha = Lockr.get('plnenaUloha');
 	if(!uloha) {
-		ui.mojAlert('Moryn: Ach, dobrý hrdina, stala sa mi nepríjemná vec. Bol som v Hustolese a po ceste domov som tak trochu stratil jednu dôležitú vec. Nachádza sa na východ od mesta hlboko v lese pri takom veľkom strome. Ak by si išiel niekedy okolo a zbadal tam veľký diamant, tak mi ho prosím prines, bohato sa ti odmením!');
+		let popis = 'Moryn: Ach, dobrý hrdina, stala sa mi nepríjemná vec. Bol som v Hustolese a po ceste domov som tak trochu stratil jednu dôležitú vec. Nachádza sa na východ od mesta hlboko v lese pri takom veľkom strome. Ak by si išiel niekedy okolo a zbadal tam veľký diamant, tak mi ho prosím prines, bohato sa ti odmením!';
+		ui.mojAlert(popis);
 
-		Lockr.set('plnenaUloha', [{nazov: 'stratenyDiamant', cielovaMapa: 'hustoles', maDiamant: false}]);
+		Lockr.set('plnenaUloha', [{nazov: 'stratenyDiamant', cielovaMapa: 'hustoles', maDiamant: false, popis: popis}]);
 	} else {
 		if(uloha[0].maDiamant) {
 			ui.mojAlert('Vďaka za diamant. Tu máš 100 zlatých');
@@ -110,8 +124,10 @@ function collect_stratenyDiamant(hrac, predmet) {
 		if(predmet.vlastnosti.predmetPreUlohu === 'stratenyDiamant') {
 			//predmet.destroy();
 			hrac.inventar.pridajDoInventara(predmet);
-			ui.mojAlert('Výborne, teraz diamant vezmi čarodejníkovy do mesta.');
-			Lockr.set('plnenaUloha', [{nazov: 'stratenyDiamant', cielovaMapa: 'hustoles', maDiamant: true}]);
+			let uloha = Lockr.get('plnenaUloha');
+			let popis = 'Výborne, teraz diamant vezmi čarodejníkovy do mesta.';
+			ui.mojAlert(popis);
+			Lockr.set('plnenaUloha', [{nazov: uloha[0].nazov, cielovaMapa: uloha[0].cielovaMapa, maDiamant: true, popis: popis}]);
 		}
 	}
 }
@@ -128,9 +144,10 @@ function game_stratenyDiamant(uloha, game) {
 function hrac_priseraVBani(hrac) {
 	var uloha = Lockr.get('plnenaUloha');
 	if(!uloha) {
-		ui.mojAlert('Alkazar: Hlboko v starej bani žije hrozný netvor. Má niečo, čo má pre mňa obrovskú hodnotu. Ak ho pre mňa zabiješ, odmením sa ti!');
+		let popis = 'Alkazar: Hlboko v starej bani žije hrozný netvor. Má niečo, čo má pre mňa obrovskú hodnotu. Ak ho pre mňa zabiješ, odmením sa ti!';
+		ui.mojAlert(popis);
 
-		Lockr.set('plnenaUloha', [{nazov: 'priseraVBani', cielovaMapa: 'staraBana', zabilHo: false}]);
+		Lockr.set('plnenaUloha', [{nazov: 'priseraVBani', cielovaMapa: 'staraBana', zabilHo: false, popis: popis}]);
 	} else {
 		if(uloha[0].zabilHo) {
 			ui.mojAlert('Vykonal si hrdinský čin! Tu máš 150 zlatých');
@@ -162,8 +179,10 @@ function game_priseraVBani(uloha, game) {
 }
 function nepriatel_priseraVBani(uloha, nepriatel) {
 	if(uloha && nepriatel.cielUlohy === 'priseraVBani') {
-		Lockr.set('plnenaUloha', [{nazov: 'priseraVBani', cielovaMapa: 'staraBana', zabilHo: true}]);
-		ui.mojAlert('Zabil si obludu. Vráť sa do Stroku a povedz o tom Alkazarovy.');
+		let popis = 'Zabil si obludu. Vráť sa do Stroku a povedz o tom Alkazarovy.';
+		let uloha = Lockr.get('plnenaUloha');
+		Lockr.set('plnenaUloha', [{nazov: uloha[0].nazov, cielovaMapa: uloha[0].cielovaMapa, zabilHo: true, popis:popis}]);
+		ui.mojAlert(popis);
 	}
 }
 
@@ -172,9 +191,10 @@ function nepriatel_priseraVBani(uloha, nepriatel) {
 function hrac_netopiereVDome(hrac) {
 	var uloha = Lockr.get('plnenaUloha');
 	if(!uloha) {
-		ui.mojAlert('Dubák: Strašná vec sa mi stala. Mám v dome netopiere. Ak ich pre mňa vyzabíjaš, odmením sa ti. Bývam hore na terase. Len mi prosím neponič kvetiny, ďakujem.');
+		let popis = 'Dubák: Strašná vec sa mi stala. Mám v dome netopiere. Ak ich pre mňa vyzabíjaš, odmením sa ti. Bývam hore na terase. Len mi prosím neponič kvetiny, ďakujem.';
+		ui.mojAlert(popis);
 
-		Lockr.set('plnenaUloha', [{nazov: 'netopiereVDome', cielovaMapa: 'domCarodejnikaVStroku', kolkoZabilNetopierov: 0, zabil10Netopierov: false}]);
+		Lockr.set('plnenaUloha', [{nazov: 'netopiereVDome', cielovaMapa: 'domCarodejnikaVStroku', kolkoZabilNetopierov: 0, zabil10Netopierov: false, popis: popis}]);
 	} else {
 		if(uloha[0].zabil10Netopierov) {
 			ui.mojAlert('Vďaka ti mocný hrdina, dúfam, že to moje kvietky prežili!');
@@ -209,8 +229,9 @@ function nepriatel_netopiereVDome(uloha, nepriatel) {
 		netopiere++;
 
 		if(netopiere >= 10) {
-			Lockr.set('plnenaUloha', [{nazov: 'netopiereVDome', cielovaMapa: 'domCarodejnikaVStroku', kolkoZabilNetopierov: 10, zabil10Netopierov: true}]);
-			ui.mojAlert('Vyčistil si Dubákov dom. Choď mu o tom povedať.');
+			let popis = 'Vyčistil si Dubákov dom. Choď mu o tom povedať.';
+			Lockr.set('plnenaUloha', [{nazov: 'netopiereVDome', cielovaMapa: 'domCarodejnikaVStroku', kolkoZabilNetopierov: 10, zabil10Netopierov: true, popis: popis}]);
+			ui.mojAlert(popis);
 		} else {
 			Lockr.set('plnenaUloha', [{nazov: 'netopiereVDome', cielovaMapa: 'domCarodejnikaVStroku', kolkoZabilNetopierov: netopiere, zabil10Netopierov: false}]);
 		}

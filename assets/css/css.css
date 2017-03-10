@@ -67,7 +67,7 @@ input, button {
 #zdraviePas {
 	position: absolute;
 	left: 0; top: 0;
-	height: 22px;
+	height: 26px;
 	background: #ff3019;
 	background: -moz-linear-gradient(top,  #ff3019 0%, #cf0404 100%);
 	background: -webkit-linear-gradient(top,  #ff3019 0%,#cf0404 100%);

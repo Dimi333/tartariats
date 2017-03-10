@@ -62,7 +62,6 @@ export class Game extends Phaser.State {
 		this.game.world.setBounds(0, 0, 640, 480);
 		this.game.stage.backgroundColor = "#4488AA";
 		this.map = this.game.add.tilemap(this.uroven);
-		this.nazovMapy = this.map.layers[0].properties.nazovMapy;
 		this.map.addTilesetImage('zakladne', 'dlazdice');
 
 		/*var myBitmap = this.game.add.bitmapData(this.game.world.width, this.game.world.height);
@@ -73,12 +72,14 @@ export class Game extends Phaser.State {
 		myBitmap.context.fillRect(0,0,this.game.world.width, this.game.world.height);
 		var lol = this.game.add.sprite(0,0, myBitmap);*/
 
-		this.vrstvaParallax = this.map.createLayer('parallax'); //oblaciky a spol
+		if(Lockr.get('paralax') === 1)
+			this.vrstvaParallax = this.map.createLayer('parallax'); //oblaciky a spol
 		this.vrstvaPozadie = this.map.createLayer('pozadie'); //da sa pred nim ist
 		this.vrstvaStromy = this.map.createLayer('stromy'); //da sa po nich liezt
 		this.vrstvaBloky = this.map.createLayer('bloky'); //zastavia hraca
 		this.map.setCollisionBetween(1, 100000, true, 'bloky');
 		this.map.setCollisionBetween(1, 100000, true, 'stromy');
+		this.nazovMapy = this.map.layers[this.vrstvaPozadie.index].properties.nazovMapy;
 
 		//parallax
 		if(Lockr.get('paralax') === 1 && typeof this.vrstvaParallax != 'undefined') {
@@ -97,6 +98,13 @@ export class Game extends Phaser.State {
 		this.vrstvaBloky.resizeWorld();
 		//lol.scale.set(100, 100);
 		this.vytvorZbieratelnePredmety();
+
+		//nazov mapy
+		this.nazovMapyText = this.game.add.text(0, 0 , this.nazovMapy, { font: 'system', fontSize: '25px', fill: '#fff', boundsAlignH: "center", boundsAlignV: "middle" });
+		this.nazovMapyText.setTextBounds(0, 0, this.game.camera.width, 50);
+		this.nazovMapyText.fixedToCamera = true;
+		this.nazovMapyText.stroke = '#000';
+		this.nazovMapyText.strokeThickness = 5;
 
 		this.vrstvaPopredie = this.map.createLayer('popredie'); //da sa za nim ist
 		
@@ -149,13 +157,6 @@ export class Game extends Phaser.State {
 				}
 			});
 		});
-
-		//nazov mapy
-		this.nazovMapyText = this.game.add.text(0, 0 , this.nazovMapy, { font: 'system', fontSize: '25px', fill: '#fff', boundsAlignH: "center", boundsAlignV: "middle" });
-		this.nazovMapyText.setTextBounds(0, 0, this.game.camera.width, 50);
-		this.nazovMapyText.fixedToCamera = true;
-		this.nazovMapyText.stroke = '#000';
-		this.nazovMapyText.strokeThickness = 5;
 
 		//pocasie
 		if(this.map.layers[0].properties.pocasie === 'snezi') {
@@ -588,7 +589,7 @@ export class Game extends Phaser.State {
 	}
 
 	render()	{
-		this.game.debug.text(String(this.game.time.fps), this.game.camera.width-80, 70, "#00ff00", "40px Courier");  
+		this.game.debug.text(String(this.game.time.fps), this.game.camera.width-25, this.game.camera.height-10, "#00ff00", "20px Courier");  
 		//this.game.debug.cameraInfo(this.game.camera, 32, 32);
 	}
 }
