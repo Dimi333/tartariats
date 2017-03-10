@@ -27,9 +27,7 @@ export class Inventar {
 		}
 		this.inventar.endFill();
 		
-
-		//let sg = this.inventar.width; //sirka grafiky
-		this.inventar.x = (game.camera.width/4) * 2.8;
+		this.inventar.x = game.camera.width - this.inventar.width-60;
 		this.inventar.fixedToCamera = true;
 		this.naplnInventar(game);
 	}
@@ -60,7 +58,7 @@ export class Inventar {
 				predmet.body.enable = false;
 				predmet.enableBody = false;
 
-				predmet.cameraOffset.setTo((this.game.camera.width/4) * 2.8 + 60 + ((i-1)*50), 30);
+				predmet.cameraOffset.setTo(this.game.camera.width - this.inventar.width + ((i-1)*50), 30);
 				Lockr.set('inventar', this.veciVInvetari);
 				break;
 			}
