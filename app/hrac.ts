@@ -199,6 +199,7 @@ export class Hrac extends Phaser.Sprite {
 			Lockr.rm('vlastnosti');
 			Lockr.rm('plnenaUloha');
 			Lockr.rm('inventar');
+			Lockr.rm('splneneUlohy');
 			location.reload(true);
 		}
 		//hlboke spady
