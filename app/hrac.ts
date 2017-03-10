@@ -233,9 +233,11 @@ export class Hrac extends Phaser.Sprite {
 				}
 
 				let style = { font: "16px Arial", fill: "#ffffff", align: "center", wordWrap: true, wordWrapWidth: this.game.camera.width/2 };
-				let textSplneneUlohy = this.game.add.text(this.game.camera.width/4, this.game.camera.height/1.5, 'Splnené úlohy: ' + Lockr.get('splneneUlohy').toString(), style);
-				textSplneneUlohy.fixedToCamera = true;
-				this.dennikGroup.add(textSplneneUlohy);
+				if(Lockr.get('splneneUlohy')) {
+					let textSplneneUlohy = this.game.add.text(this.game.camera.width/4, this.game.camera.height/1.5, 'Splnené úlohy: ' + Lockr.get('splneneUlohy').toString(), style);
+					textSplneneUlohy.fixedToCamera = true;
+					this.dennikGroup.add(textSplneneUlohy);
+				}
 			} else {
 				this.dennik = undefined;
 				this.dennikGroup.callAll('destroy');
