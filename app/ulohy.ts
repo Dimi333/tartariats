@@ -1,16 +1,23 @@
 /// <reference path="../vendor/phaser.d.ts"/>
 declare var Lockr: any;
 declare var $: any;
-
 import {UI} from './ui';
 import {Nepriatel} from './nepriatel';
 import {Predmet} from './predmet';
-
 var ui:UI = new UI();
+
+
 
 export function hrac_zadajUlohu(sKymSaRozprava, hrac) {
 	let uloha = Lockr.get('plnenaUloha');
-	
+
+	for(let u of hrac.splneneUlohy) {
+		if(u === sKymSaRozprava.uloha) {
+			ui.mojAlert('Už pre teba nemá žiadnu ďalšiu úlohu.');
+			return;
+		}
+	};
+
 	if(!uloha) {
 		if(sKymSaRozprava.uloha === 'Hostimil') hrac_uvod(hrac)
 		if(sKymSaRozprava.uloha === 'stratenyDiamant') hrac_stratenyDiamant(hrac);
@@ -51,10 +58,13 @@ export function nepriatel_zabitaBytost(slime) {
 	}
 }
 
+
+
+
 //////////////////////////////////////////////////////////////////////////////////// Úvod
 
 function hrac_uvod(hrac) {
-	ui.mojAlert('Vitaj dobrodruh! Klávesami E alebo CTRL vyvolávaš akcie. Kliknutým ľavej myši strielaš a hýbeš sa klávesami A a D alebo smerovými šípkami. Skáčeš W alebo MEDZERNÍKOM. Niektoré postavy ti môžu dať pri rozhovore úlohu. Naraz môžeš plniť len jednu.');
+	ui.mojAlert('Vitaj dobrodruh! Klávesami E alebo CTRL vyvolávaš akcie. Kliknutým ľavej myši strielaš a hýbeš sa klávesami A a D alebo smerovými šípkami. Skáčeš W alebo MEDZERNÍKOM. Niektoré postavy ti môžu dať pri rozhovore úlohu. Zoznam úloh nájdeš, keď stlačíš Q.');
 }
 
 //////////////////////////////////////////////////////////////////////////////////// Stratený nápoj
@@ -73,6 +83,7 @@ function hrac_stratenyNapoj(hrac) {
 			hrac.inventar.vezmiZInventara('ruzovaFlasa');
 			hrac.vypisHUD();
 			Lockr.rm('plnenaUloha');
+			hrac.pridajSplnenuUlohu('stratenyNapoj');
 		} else {
 			ui.mojAlert('Nájdi stratený nápoj v Plesách pre Ľudmilu.');
 		}
@@ -114,6 +125,7 @@ function hrac_stratenyDiamant(hrac) {
 			hrac.vypisHUD();
 			hrac.inventar.vezmiZInventara('diamant');
 			Lockr.rm('plnenaUloha');
+			hrac.pridajSplnenuUlohu('stratenyDiamant');
 		} else {
 			ui.mojAlert('Nájdi diamant v Hustolese pre Moryna.');
 		}
@@ -155,6 +167,7 @@ function hrac_priseraVBani(hrac) {
 			hrac.vlastnosti.skusenosti += 1500;
 			hrac.vypisHUD();
 			Lockr.rm('plnenaUloha');
+			hrac.pridajSplnenuUlohu('priseraVBani');
 		} else {
 			ui.mojAlert('Choď do starej bane a zabi netvora, čo tam žije.');
 		}
@@ -202,6 +215,7 @@ function hrac_netopiereVDome(hrac) {
 			hrac.vlastnosti.skusenosti += 500;
 			hrac.vypisHUD();
 			Lockr.rm('plnenaUloha');
+			hrac.pridajSplnenuUlohu('netopiereVDome');
 		} else {
 			ui.mojAlert('V dome na kopci mám hromadu netopierov. Zbav ma ich prosím, a dávaj pozor na moje kvietky!');
 		}

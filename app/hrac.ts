@@ -37,6 +37,7 @@ export class Hrac extends Phaser.Sprite {
 	dennikGroup;
 	dennik;
 	dennikKey;
+	splneneUlohy:Array<string> = [];
 
 	constructor(game, kdeMaZacatx, kdeMaZacaty, pohybliveVeci, popredie, bloky, stromy, zbieratelnePredmety, nepriatelia, sipy, sipyNepriatelov, vlastnosti) {
 		super(game, kdeMaZacatx, kdeMaZacaty);
@@ -141,6 +142,8 @@ export class Hrac extends Phaser.Sprite {
 		this.jeVoVode = false;
 
 		Object.create(Phaser.Sprite.prototype);
+
+		this.splneneUlohy = Lockr.get('splneneUlohy');
 		
 		this.inventar = new Inventar(this.game);
 	};
@@ -209,33 +212,30 @@ export class Hrac extends Phaser.Sprite {
 			var uloha = Lockr.get('plnenaUloha');
 
 			if(typeof this.dennik === 'undefined') {
-				if(uloha) {
-					this.dennikGroup = this.game.add.group();
-					this.dennik = this.game.add.graphics(1, 1);
-					this.dennik.lineStyle(4, 0x000000, 1);
-					this.dennik.y = 20;
-					this.dennik.x = 180;
-					this.dennik.beginFill(0x000000);
-						this.dennik.fillAlpha = .8;
-						this.dennik.drawRect(0, 0, this.game.camera.width - 320, this.game.camera.height - 40);
-						
-						let style = { font: "16px Arial", fill: "#ffffff", align: "center", wordWrap: true, wordWrapWidth: 500 };
-						let text = this.game.add.text(300, 100, uloha[0].popis, style);
-						text.fixedToCamera = true;
+				this.dennikGroup = this.game.add.group();
+				this.dennik = this.game.add.graphics(1, 1);
+				this.dennik.lineStyle(4, 0x000000, 1);
+				this.dennik.y = 20;
+				this.dennik.x = 180;
+				this.dennik.beginFill(0x000000);
+					this.dennik.fillAlpha = .8;
+					this.dennik.drawRect(0, 0, this.game.camera.width - 320, this.game.camera.height - 40);
+				this.dennik.endFill();
+				this.dennik.fixedToCamera = true;
+				this.dennikGroup.add(this.dennik);
 
-					this.dennik.endFill();
-					this.dennik.fixedToCamera = true;
-					this.dennikGroup.add(this.dennik);
+				if(uloha) {
+					let style = { font: "16px Arial", fill: "#ffffff", align: "center", wordWrap: true, wordWrapWidth: this.game.camera.width/2 };
+					let text = this.game.add.text(this.game.camera.width/4, this.game.camera.height/5, uloha[0].popis, style);
+					text.fixedToCamera = true;
 					this.dennikGroup.add(text);
 				}
+
+				let style = { font: "16px Arial", fill: "#ffffff", align: "center", wordWrap: true, wordWrapWidth: this.game.camera.width/2 };
+				let textSplneneUlohy = this.game.add.text(this.game.camera.width/4, this.game.camera.height/1.5, 'Splnené úlohy: ' + Lockr.get('splneneUlohy').toString(), style);
+				textSplneneUlohy.fixedToCamera = true;
+				this.dennikGroup.add(textSplneneUlohy);
 			} else {
-				/*if(!this.dennikGroup.alive && uloha) {
-					this.dennikGroup.alive = true;
-					this.dennikGroup.visible = true;
-				} else {
-					this.dennikGroup.alive = false;
-					this.dennikGroup.visible = false;
-				}*/
 				this.dennik = undefined;
 				this.dennikGroup.callAll('destroy');
 				this.dennikGroup.destroy();
@@ -363,6 +363,7 @@ export class Hrac extends Phaser.Sprite {
 		this.vlastnosti.kdeMaZacatx = x;
 		this.vlastnosti.kdeMaZacaty = y;
 		Lockr.set('vlastnosti', this.vlastnosti);
+		Lockr.set('splneneUlohy', this.splneneUlohy);
 	};
 
 	collect(player, collectable) {
@@ -459,6 +460,11 @@ export class Hrac extends Phaser.Sprite {
 				ulohy.hrac_zadajUlohu(collectable, this);
 			}
 		}
+	};
+
+	pridajSplnenuUlohu(meno) {
+		this.splneneUlohy.push(meno);
+		this.uloz(this.vlastnosti.uroven, this.x, this.y);
 	};
 
 	vypisHUD() {
