@@ -143,7 +143,8 @@ export class Hrac extends Phaser.Sprite {
 
 		Object.create(Phaser.Sprite.prototype);
 
-		this.splneneUlohy = Lockr.get('splneneUlohy');
+		if(Lockr.get('splneneUlohy'))
+			this.splneneUlohy = Lockr.get('splneneUlohy');
 		
 		this.inventar = new Inventar(this.game);
 	};

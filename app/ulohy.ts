@@ -11,12 +11,14 @@ var ui:UI = new UI();
 export function hrac_zadajUlohu(sKymSaRozprava, hrac) {
 	let uloha = Lockr.get('plnenaUloha');
 
-	for(let u of hrac.splneneUlohy) {
-		if(u === sKymSaRozprava.uloha) {
-			ui.mojAlert('Už pre teba nemá žiadnu ďalšiu úlohu.');
-			return;
-		}
-	};
+	if(hrac.splneneUlohy) {
+		for(let u of hrac.splneneUlohy) {
+			if(u === sKymSaRozprava.uloha) {
+				ui.mojAlert('Už pre teba nemá žiadnu ďalšiu úlohu.');
+				return;
+			}
+		};
+	}
 
 	if(!uloha) {
 		if(sKymSaRozprava.uloha === 'Hostimil') hrac_uvod(hrac)
