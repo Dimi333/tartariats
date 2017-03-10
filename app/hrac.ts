@@ -16,7 +16,6 @@ export class Hrac extends Phaser.Sprite {
 	popredie;
 	enableBody;
 	cursors;
-	kameraX;
 	spaceKey;
 	rctrlKey;
 	tildaKey;
@@ -30,7 +29,6 @@ export class Hrac extends Phaser.Sprite {
 	sipy;
 	otocenie;
 	casStrelby;
-	spomalenie;
 	jeVoVode;
 	zobrazenaBublina;
 	znenie:string = "0.1.24";
@@ -66,7 +64,7 @@ export class Hrac extends Phaser.Sprite {
 
 		this.game.physics.arcade.enable(this);
 		this.enableBody = true;
-		this.body.mass = 80;
+		this.body.mass = 100;
 		this.body.maxVelocity.setTo(500, 5000); // x, y
 		this.body.drag.setTo(1200, 100); // x, y
 
@@ -85,7 +83,6 @@ export class Hrac extends Phaser.Sprite {
 		}
 
 		this.cursors = this.game.input.keyboard.createCursorKeys();
-		this.kameraX = this.game.camera.x; //kvoli paralaxu
 
 		this.spaceKey = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 		this.rctrlKey = this.game.input.keyboard.addKey(Phaser.Keyboard.CONTROL);
@@ -111,7 +108,8 @@ export class Hrac extends Phaser.Sprite {
 
 		var html = "<div class='okno' id='HUD'><span id='riadokZdravie'><span id='zdraviePas'></span><span class='txt'><span id='zdravie'>" + this.vlastnosti.zdravie  + "</span> / <span id='plneZdravie'>" + this.vlastnosti.plneZdravie  + "</span></span></span>"+
 		"<span id='riadokPeniaze'><img src='assets/obr/minca.png'> <span id='peniaze'>" + this.vlastnosti.peniaze  + "</span></span><br>" + 
-		"<span id='riadokSkusenosti'>Skúsenosti: <span id='skusenosti'>" + this.vlastnosti.skusenosti  + "</span></span>"+
+		"<span id='riadokSkusenosti'>Skúsenosti: <span id='skusenosti'>" + this.vlastnosti.skusenosti  + "</span></span><br>"+
+		"<small>Denník: [Q]</small>" +
 		"<br><small>znenie: "+this.znenie+"</small></div>";
 
 		if($('#HUD').length === 0) {
@@ -140,7 +138,6 @@ export class Hrac extends Phaser.Sprite {
 		this.otocenie = 1; //-1-vlavo, 1-vpravo
 		this.casStrelby = 0;
 
-		this.spomalenie = 1;
 		this.jeVoVode = false;
 
 		Object.create(Phaser.Sprite.prototype);
@@ -150,7 +147,6 @@ export class Hrac extends Phaser.Sprite {
 
 	update() {
 		this.jeVoVode = false;
-		this.spomalenie = 1;
 
 		this.game.physics.arcade.collide(this, this.pohybliveVeci, function(hrac, krabica) {
 			if(hrac.body.touching.down)
@@ -162,7 +158,6 @@ export class Hrac extends Phaser.Sprite {
 		this.game.physics.arcade.collide(this, this.bloky, null, null, this);
 		this.game.physics.arcade.overlap(this, this.popredie, function(hrac, popredie) {
 			if(popredie.index === 296 || popredie.index === 297) { //voda
-				this.spomalenie = 1.1;
 				this.jeVoVode = true;
 			}
 		}, null, this);
@@ -186,8 +181,10 @@ export class Hrac extends Phaser.Sprite {
 		if(this.jeVoVode) {
 			this.body.gravity.y = 400;
 			this.body.velocity.y /= 1.1;
-		} else
+			this.body.velocity.x /= 1.1;
+		} else {
 			this.body.gravity.y = this.vlastnosti.gravitacia;
+		}
 
 		//zatvorenie okna
 		if(this.escKey.justDown) {
@@ -210,7 +207,6 @@ export class Hrac extends Phaser.Sprite {
 
 		if(this.dennikKey.justDown) {
 			var uloha = Lockr.get('plnenaUloha');
-			console.log(this.dennik);
 
 			if(typeof this.dennik === 'undefined') {
 				if(uloha) {
@@ -263,43 +259,26 @@ export class Hrac extends Phaser.Sprite {
 		if(this.tildaKey.justDown)
 			this.game.state.start('Nastavenia');
 
-		//samotny pohyb
-		if(this.spomalenie > 1) {
-			//this.rp /= 	this.spomalenie;
-		}
-
 		//naklananie sipov podla drahy
 		this.sipy.forEachAlive(function(bullet) {
 			bullet.rotation = Math.atan2(bullet.body.velocity.y, bullet.body.velocity.x);
 		}, this);
 
-		//paralax1.y = this.game.camera.y / 4;
-
 		if (this.wasdSipky.left.isDown || this.wasd.left.isDown) {
 			this.otocenie = -1;
-			if(this.game.camera.x != this.kameraX) {
-				//paralax1.x -= .5;
-			}
-
+			
 			this.body.acceleration.x = -this.vlastnosti.rychlostPohybu;
 
 			this.animations.play('left');
-
-			this.kameraX = this.game.camera.x;
 		} else if (this.wasdSipky.right.isDown || this.wasd.right.isDown) {
 			this.otocenie = 1;
-			if(this.game.camera.x != this.kameraX) {
-				//paralax1.x += .5;
-			}
 
 			this.body.acceleration.x = this.vlastnosti.rychlostPohybu;
 
 			this.animations.play('right');
-			this.kameraX = this.game.camera.x;
 		} else if((this.wasdSipky.down.isDown || this.wasd.down.isDown) && this.jeVoVode) {
 			if(this.body.velocity.y < this.vlastnosti.rychlostPohybu)
 				this.body.velocity.y += this.vlastnosti.zrychlenie;
-			this.kameraX = this.game.camera.x;
 		} else {
 			this.animations.play('stop');
 			this.body.acceleration.x = 0;
@@ -350,8 +329,6 @@ export class Hrac extends Phaser.Sprite {
 			}
 			// If we have a laser, set it to the starting position
 			sip.reset(this.x + 20, this.y + 30);
-			// Give it a velocity of -500 so it starts shooting
-			sip.body.velocity.x = 700 * this.otocenie;
 			this.casStrelby = Date.now() + 300;
 		}
 	};
@@ -364,7 +341,10 @@ export class Hrac extends Phaser.Sprite {
 			this.casStrelby = Date.now() + 300;
 			sip.rotation = this.game.physics.arcade.angleToPointer(sip);
 			sip.body.gravity.y = 500;
-			this.game.physics.arcade.moveToPointer(sip, 700);
+			let rs:number = 700;
+			if(this.jeVoVode)
+				rs /= 1.5;
+			this.game.physics.arcade.moveToPointer(sip, rs);
 		}
 	};
 

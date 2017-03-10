@@ -27,15 +27,15 @@ export class Nepriatel extends Phaser.Sprite {
 	constructor(game, hrac, vlastnosti, vrstvaBloky, vrstvaMince, stromy, sipy, sipyNepriatelov, x, y) {
 		super(game, x, y);
 
-		if(vlastnosti.sprite === "netopier" || 
+		if(	vlastnosti.sprite === "netopier" || 
 			vlastnosti.sprite === "slime" ||
 			vlastnosti.sprite === "slime2" ||
 			vlastnosti.sprite === "kostlivec" ||
 			vlastnosti.sprite === "slimeBoss" ||
 			vlastnosti.sprite === "ohyzd") {
 			this.sprite = Phaser.Sprite.call(this, game, x, y, 'dataFile', vlastnosti.sprite + '01.png');
-		} else {
-			Phaser.Sprite.call(this, game, x, y, vlastnosti.sprite);   
+		} if(vlastnosti.sprite === "netopier2") {
+			this.sprite = Phaser.Sprite.call(this, game, x, y, 'dataFile', vlastnosti.sprite + '1.png');
 		}
 
 		this.autoCull = true;
@@ -95,9 +95,9 @@ export class Nepriatel extends Phaser.Sprite {
 			this.animations.add('let', Phaser.Animation.generateFrameNames(this.sprite, 2, 4, '.png', 2), 10, true, false);
 			this.animations.play('let');
 		}
-		if(this.key === "netopier2") {
+		if(vlastnosti.sprite === "netopier2") {
 			this.body.gravity.y = 0;
-			this.animations.add('let', ['netopier22', 'netopier23', 'netopier24']);
+			this.animations.add('let', Phaser.Animation.generateFrameNames(this.sprite, 1, 3, '.png', 1), 10, true, false);
 			this.animations.play('let', 13, true);
 		}
 
