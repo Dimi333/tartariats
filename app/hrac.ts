@@ -31,7 +31,7 @@ export class Hrac extends Phaser.Sprite {
 	casStrelby;
 	jeVoVode;
 	zobrazenaBublina;
-	znenie:string = "0.1.24";
+	znenie:string = "0.1.25";
 	ui;
 	inventar;
 	dennikGroup;
